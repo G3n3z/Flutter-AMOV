@@ -75,10 +75,59 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: ListView.separated(
                   itemCount: _ementas!.length,
                   separatorBuilder: (_, __) => const Divider(thickness: 2.0),
-                  itemBuilder: (BuildContext context, int index) => ListTile(
-                    title: Text('Ementa #$index'),
-                    subtitle: Text(_ementas![index].day ?? "ABC"),
-                    onTap: (){}//TODO: Criar nova pagina},
+                  itemBuilder: (BuildContext context, int index) =>
+                  //     ListTile(
+                  //   leading: Icon(Icons.ac_unit_rounded),
+                  //   title: Text('Ementa #$index'),
+                  //   subtitle: Text(_ementas![index].day ?? "ABC"),
+                  //   onTap: (){}//TODO: Criar nova pagina},
+                  // )
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25.0),
+                        child: Container(
+                          child: Icon(Icons.ac_unit_rounded),
+                          height: 100,
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                                child:Text(_ementas![index].day ?? "ABC")),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Row( children: [
+                                Text("Soup: "),
+                                Text((_ementas![index].soup ?? "ABC"))
+                              ]
+                              )
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Container(child:Text("Fish: " + (_ementas![index].fish ?? "ABC"))),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Container(child:Text("Meat: " + (_ementas![index].meat ?? "ABC"))),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Container(child:Text("Vegeterian: " + (_ementas![index].vegetarian ?? "ABC"))),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Container(child:Text("Desert: " + (_ementas![index].desert ?? "ABC"))),
+                            ),
+                          ],
+                        ),
+                      )
+
+                    ],
                   )
                 ),
               )
@@ -118,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
-      http.Response response = await http.get(Uri.parse("http://192.168.1.71:8080/menu"));
+      http.Response response = await http.get(Uri.parse("http://10.0.2.2:8080/menu"));
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         final Map<String, dynamic> decodedData = json.decode(response.body);
