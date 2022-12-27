@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'DetailsPage.dart';
 import 'MyHomePage.dart';
 
 void main() {
@@ -14,10 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute:"",
+      initialRoute:"Home",
       routes:{
         "Home": (BuildContext context) => MyHomePage(title: "Home"),
-        //"SecondScreen": (BuildContext context) => MySecondScreen(),
+        "DetailsPage": (BuildContext context) => DetailsPage(),
         //"CatsScreen": (BuildContext context) => CatFactsScreen()
       },
       theme: ThemeData(
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+
     );
   }
 }

@@ -82,58 +82,63 @@ class _MyHomePageState extends State<MyHomePage> {
                   //   subtitle: Text(_ementas![index].day ?? "ABC"),
                   //   onTap: (){}//TODO: Criar nova pagina},
                   // )
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25.0),
-                        child: Container(
-                          child: Icon(Icons.ac_unit_rounded),
-                          height: 100,
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.of(context).pushNamed("DetailsPage", arguments: _ementas![index]);
+                    },
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25.0),
+                          child: Container(
+                            child: Icon(Icons.ac_unit_rounded),
+                            height: 100,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                                child:Text(_ementas![index].day ?? "ABC",
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                    textScaleFactor: 1.2
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  child:Text(_ementas![index].day ?? "ABC",
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      textScaleFactor: 1.2
+                                  )
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Row( children: [
+                                  Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                  Text((_ementas![index].soup ?? "ABC"))
+                                ]
                                 )
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Row( children: [
-                                Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                Text((_ementas![index].soup ?? "ABC"))
-                              ]
-                              )
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Row(children: [
-                                Text("Fish: " + (_ementas![index].fish ?? "ABC"))
-                              ]),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Container(child:Text("Meat: " + (_ementas![index].meat ?? "ABC"))),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Container(child:Text("Vegeterian: " + (_ementas![index].vegetarian ?? "ABC"))),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Container(child:Text("Desert: " + (_ementas![index].desert ?? "ABC"))),
-                            ),
-                          ],
-                        ),
-                      )
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Row(children: [
+                                  Text("Fish: " + (_ementas![index].fish ?? "ABC"))
+                                ]),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Container(child:Text("Meat: " + (_ementas![index].meat ?? "ABC"))),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Container(child:Text("Vegeterian: " + (_ementas![index].vegetarian ?? "ABC"))),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Container(child:Text("Desert: " + (_ementas![index].desert ?? "ABC"))),
+                              ),
+                            ],
+                          ),
+                        )
 
-                    ],
+                      ],
+                    ),
                   )
                 ),
               )
