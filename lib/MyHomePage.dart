@@ -98,18 +98,24 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                                child:Text(_ementas![index].day ?? "ABC")),
+                                child:Text(_ementas![index].day ?? "ABC",
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    textScaleFactor: 1.2
+                                )
+                            ),
                             Padding(
                               padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
                               child: Row( children: [
-                                Text("Soup: "),
+                                Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
                                 Text((_ementas![index].soup ?? "ABC"))
                               ]
                               )
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                              child: Container(child:Text("Fish: " + (_ementas![index].fish ?? "ABC"))),
+                              child: Row(children: [
+                                Text("Fish: " + (_ementas![index].fish ?? "ABC"))
+                              ]),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
