@@ -96,47 +96,64 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         Expanded(
-                          flex: 1,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
                                   child:Text(_ementas![index].day ?? "ABC",
-                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(_ementas![index])),
                                       textScaleFactor: 1.2
                                   )
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Row( children: [
-                                  Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                  Text((_ementas![index].soup ?? "ABC"))
-                                ]
-                                )
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Row(children: [
-                                  Text("Fish: " + (_ementas![index].fish ?? "ABC"))
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text((_ementas![index].soup ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
                                 ]),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Container(child:Text("Meat: " + (_ementas![index].meat ?? "ABC"))),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text((_ementas![index].fish ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                                ]),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Container(child:Text("Vegeterian: " + (_ementas![index].vegetarian ?? "ABC"))),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text((_ementas![index].meat ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                                    ]),
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Container(child:Text("Desert: " + (_ementas![index].desert ?? "ABC"))),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children:[
+                                      Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text((_ementas![index].vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                                    ]),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children:[
+                                      Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text((_ementas![index].desert ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                                    ]),
                               ),
                             ],
                           ),
                         )
-
                       ],
                     ),
                   )
@@ -158,14 +175,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+
   Future<void> getDataOfSharedPreferences() async {
     var prefs = await SharedPreferences.getInstance();
     String? list = prefs.getString("ListOfLunch");
     if (list != null) {
+      debugPrint(list);
+      final Map<String, dynamic> decodedData = json.decode(list);
       _ementas = [];
       setState(() {
         _dataAvailable = true;
         _fetchingData = false;
+        _text = "";
+        decodedData.forEach((key, value) {
+          if (value["update"] != null) {
+            _ementas?.add(EmentaDia.fromJson(value["update"], true));
+          }else{
+            _ementas?.add(EmentaDia.fromJson(value["original"], false));
+          }
+        });
       });
     }else{
       setState(() {
@@ -175,6 +203,11 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<void> storeDataOnSharedPreferences(String jsonString) async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString("ListOfLunch", jsonString);
+  }
+
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
@@ -182,15 +215,17 @@ class _MyHomePageState extends State<MyHomePage> {
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         final Map<String, dynamic> decodedData = json.decode(response.body);
+        storeDataOnSharedPreferences(response.body);
         _ementas = [];
-        setState(() {
+        setState(() => {
+          _text = "",
           decodedData.forEach((key, value) {
             if (value["update"] != null) {
-              _ementas?.add(EmentaDia.fromJson(value["update"]));
+              _ementas?.add(EmentaDia.fromJson(value["update"], true));
             }else{
-              _ementas?.add(EmentaDia.fromJson(value["original"]));
+              _ementas?.add(EmentaDia.fromJson(value["original"], false));
             }
-          });
+          })
         });
       }
     } catch (ex) {
@@ -198,6 +233,13 @@ class _MyHomePageState extends State<MyHomePage> {
     } finally {
       setState(() => _fetchingData = false);
     }
+  }
+
+  Color getColorStyle(EmentaDia ementa) {
+    if(ementa.update == true){
+      return Colors.teal.shade700;
+    }
+    return Colors.black87;
   }
 }
 
