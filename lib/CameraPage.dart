@@ -92,7 +92,7 @@ class _CameraPageState extends State<CameraPage> {
       await _initializeControllerFuture;
       final image = await controller.takePicture();
       if (!mounted) return;
-      print(image.path);
+      Navigator.of(context).pop(image.path);
       // If the picture was taken, display it on a new screen.
 
     } catch (e) {

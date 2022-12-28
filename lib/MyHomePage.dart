@@ -211,7 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
-      http.Response response = await http.get(Uri.parse("http://10.0.2.2:8080/menu"));
+      http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu"));
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
