@@ -6,6 +6,8 @@ class EmentaDia{
   Ementa? updated;
   String? img;
   bool isUpdated = false;
+  Ementa? toShow;
+
 
   EmentaDia(this.original, this.updated, this.isUpdated, this.day);
 
@@ -16,6 +18,7 @@ class EmentaDia{
     }
     Ementa original = Ementa.fromJson(json["original"], false);
     EmentaDia dia = EmentaDia(original, updated, updated != null, original.day!);
+    dia.toShow = updated ?? original;
     dia.img = updated != null && updated.img != null ? updated.img : original.img;
     return dia;
   }
