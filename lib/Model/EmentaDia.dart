@@ -1,40 +1,23 @@
+import 'Ementa.dart';
+
 class EmentaDia{
-
-  String? day;
+  String day;
+  Ementa original;
+  Ementa? updated;
   String? img;
-  String? weekDay;
-  String? soup;
-  String? fish;
-  String? meat;
-  String? vegetarian;
-  String? desert;
-  bool? update;
+  bool isUpdated = false;
 
-  EmentaDia();
+  EmentaDia(this.original, this.updated, this.isUpdated, this.day);
 
-  EmentaDia.all(this.day, this.img, this.weekDay, this.soup, this.fish, this.meat,
-      this.vegetarian, this.desert, this.update);
-
-  factory EmentaDia.fromJson(Map<String, dynamic> json, bool flag){
-    EmentaDia ementa = EmentaDia();
-    ementa.day = json["weekDay"];
-    ementa.img = json["img"];
-    ementa.weekDay = json["weekDay"];
-    ementa.soup = json["soup"];
-    ementa.fish = json["fish"];
-    ementa.meat = json["meat"];
-    ementa.vegetarian = json["vegetarian"];
-    ementa.desert = json["desert"];
-    ementa.update = flag;
-    return ementa;
-  }
-
-  Map<String, dynamic> toJson(){
-    final Map<String, dynamic> data = <String, dynamic>{};
-
-
-
-    return data;
+  factory EmentaDia.fromJson(Map<String, dynamic> json){
+    Ementa? updated;
+    if (json["update"] != null) {
+       updated = Ementa.fromJson(json["update"], true);
+    }
+    Ementa original = Ementa.fromJson(json["original"], false);
+    EmentaDia dia = EmentaDia(original, updated, updated != null, original.day!);
+    dia.img = updated != null && updated.img != null ? updated.img : original.img;
+    return dia;
   }
 
 }

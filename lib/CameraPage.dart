@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:ementa_cantina/CameraInst.dart';
-import 'package:ementa_cantina/Model/EmentaDia.dart';
+import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
 
 

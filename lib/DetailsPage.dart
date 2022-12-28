@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ementa_cantina/CameraInst.dart';
-import 'package:ementa_cantina/Model/EmentaDia.dart';
+import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -21,7 +21,7 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
 
   late final Object? args = ModalRoute.of(context)?.settings.arguments;
-  late final EmentaDia? ementaDia = args is EmentaDia ? args as EmentaDia : null;
+  late final Ementa? ementaDia = args is Ementa ? args as Ementa : null;
 
   final TextEditingController _controller_soup = TextEditingController();
   final TextEditingController _controller_fish = TextEditingController();
@@ -156,7 +156,7 @@ class _DetailsPageState extends State<DetailsPage> {
     }
 
 
-    http.Response request = await http.post(Uri.parse("http://10.0.2.2:8080/menu"),
+    http.Response request = await http.post(Uri.parse("http://192.168.1.65:8080/menu"),
         headers: {'Content-Type': 'application/json; charset=UTF-8 '},
         body: jsonEncode( data)
     );
