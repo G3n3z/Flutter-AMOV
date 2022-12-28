@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   // )
                   GestureDetector(
                     onTap: (){
-                      Navigator.of(context).pushNamed("DetailsPage", arguments: _ementas![index]);
+                      onClick(_ementas![index]);
                     },
                     child: Row(
                       children: [
@@ -235,11 +235,21 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+
   Color getColorStyle(EmentaDia ementa) {
     if(ementa.update == true){
       return Colors.teal.shade700;
     }
     return Colors.black87;
+  }
+
+  Future<void> onClick(EmentaDia ementaDia)async {
+    final object = await Navigator.of(context).pushNamed("DetailsPage", arguments: ementaDia);
+    bool successfully = object is bool ? object : false;
+
+    if(successfully){
+      _updateData();
+    }
   }
 }
 

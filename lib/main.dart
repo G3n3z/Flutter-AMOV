@@ -1,9 +1,17 @@
+import 'package:ementa_cantina/CameraInst.dart';
+import 'package:ementa_cantina/CameraPage.dart';
 import 'package:flutter/material.dart';
 
 import 'DetailsPage.dart';
 import 'MyHomePage.dart';
+import 'dart:io';
+import 'package:camera/camera.dart';
 
-void main() {
+Future<void> main()async {
+
+  // Get a specific camera from the list of available cameras.
+
+
   runApp(const MyApp());
 }
 
@@ -19,7 +27,7 @@ class MyApp extends StatelessWidget {
       routes:{
         "Home": (BuildContext context) => MyHomePage(title: "Home"),
         "DetailsPage": (BuildContext context) => DetailsPage(),
-        //"CatsScreen": (BuildContext context) => CatFactsScreen()
+        "CameraPage" : (BuildContext context) => CameraPage()
       },
       theme: ThemeData(
         // This is the theme of your application.
