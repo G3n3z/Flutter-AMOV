@@ -10,7 +10,14 @@ import 'package:camera/camera.dart';
 Future<void> main()async {
 
   // Get a specific camera from the list of available cameras.
+  WidgetsFlutterBinding.ensureInitialized();
+  // Obtain a list of the available cameras on the device.
+  // Obtain a list of the available cameras on the device.
+  final cameras = await availableCameras();
 
+  // Get a specific camera from the list of available cameras.
+  final firstCamera = cameras.first;
+  CameraInstance.getInstance(camera: firstCamera);
 
   runApp(const MyApp());
 }
@@ -30,15 +37,7 @@ class MyApp extends StatelessWidget {
         "CameraPage" : (BuildContext context) => CameraPage()
       },
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+
         primarySwatch: Colors.blue,
       ),
 

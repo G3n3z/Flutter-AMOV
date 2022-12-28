@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:ementa_cantina/CameraInst.dart';
-import 'package:ementa_cantina/Model/EmentaDia.dart';
+import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 
 import 'CameraPage.dart';
+import 'Teste.dart';
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key}) : super(key: key);
 
@@ -19,7 +21,7 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
 
   late final Object? args = ModalRoute.of(context)?.settings.arguments;
-  late final EmentaDia? ementaDia = args is EmentaDia ? args as EmentaDia : null;
+  late final Ementa? ementaDia = args is Ementa ? args as Ementa : null;
 
   final TextEditingController _controller_soup = TextEditingController();
   final TextEditingController _controller_fish = TextEditingController();
@@ -33,7 +35,8 @@ class _DetailsPageState extends State<DetailsPage> {
   String? _meat;
   String? _vegetarian;
   String? _desert;
-
+  late String path;
+  bool haveImage = false;
   @override
   void initState() {
     super.initState();
@@ -110,6 +113,8 @@ class _DetailsPageState extends State<DetailsPage> {
                 controller: _controller_desert,
               ),
             ),
+            if (haveImage)
+              Image.file(File(path)),
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
@@ -138,8 +143,20 @@ class _DetailsPageState extends State<DetailsPage> {
     data["meat"] = _controller_meat.text ?? "";
     data["vegetarian"] = _controller_vegetarian.text ?? "";
     data["desert"] = _controller_desert.text ?? "";
+    String base64string = "";
+    if(haveImage && path != "") {
+      try{
+        File imagefile = File(path); //convert Path to File
+        Uint8List imagebytes = await imagefile.readAsBytes(); //convert to bytes
+        base64string = base64.encode(imagebytes);
+      }catch(e){}
+    }
+    if (base64string != "") {
+      data["img"] = base64string;
+    }
 
-    http.Response request = await http.post(Uri.parse("http://10.0.2.2:8080/menu"),
+
+    http.Response request = await http.post(Uri.parse("http://192.168.1.65:8080/menu"),
         headers: {'Content-Type': 'application/json; charset=UTF-8 '},
         body: jsonEncode( data)
     );
@@ -153,13 +170,14 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Future<void> getPicture()async {
-    WidgetsFlutterBinding.ensureInitialized();
-    // Obtain a list of the available cameras on the device.
-    // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
 
-    // Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
-    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => CameraPage.camera(firstCamera)));
+    final object = await Navigator.of(context).push(MaterialPageRoute(builder: (_) => CameraPage()));
+    path = object is String ? object : "";
+    if (path != "") {
+      setState(() {
+        haveImage = true;
+      });
+    }
+    //await Navigator.of(context).push(MaterialPageRoute(builder: (_) => TakePictureScreen(camera:CameraInstance.getInstance()!.camera!)));
   }
 }

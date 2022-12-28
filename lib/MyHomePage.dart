@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:ementa_cantina/Model/EmentaDia.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,8 +27,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  List<EmentaDia>? _ementas;
+  List<EmentaDia> ementas = [];
   bool _fetchingData = false;
   bool _dataAvailable = false;
   String _text = "";
@@ -36,16 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
     getDataOfSharedPreferences();
   }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,90 +61,96 @@ class _MyHomePageState extends State<MyHomePage> {
                Text(_text),
             if (_fetchingData)
               const CircularProgressIndicator(),
-            if (!_fetchingData && _ementas != null && _ementas!.isNotEmpty)
+            if (!_fetchingData && ementas.isNotEmpty)
               Expanded(
                 child: ListView.separated(
-                  itemCount: _ementas!.length,
+                  itemCount: ementas.length,
                   separatorBuilder: (_, __) => const Divider(thickness: 2.0),
                   itemBuilder: (BuildContext context, int index) =>
-                  //     ListTile(
-                  //   leading: Icon(Icons.ac_unit_rounded),
-                  //   title: Text('Ementa #$index'),
-                  //   subtitle: Text(_ementas![index].day ?? "ABC"),
-                  //   onTap: (){}//TODO: Criar nova pagina},
-                  // )
+
                   GestureDetector(
                     onTap: (){
-                      onClick(_ementas![index]);
+                      onClick(ementas[index].toShow!);
                     },
-                    child: Row(
+                    child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 25.0),
+                          padding: const EdgeInsets.only(top: 30, bottom: 15),
                           child: Container(
-                            child: Icon(Icons.ac_unit_rounded),
-                            height: 100,
+                              child:Text(ementas[index].day ?? "ABC",
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(ementas[index].toShow!)),
+                                  textScaleFactor: 1.5
+                              )
                           ),
                         ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  child:Text(_ementas![index].day ?? "ABC",
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(_ementas![index])),
-                                      textScaleFactor: 1.2
-                                  )
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text((_ementas![index].soup ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
-                                ]),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text((_ementas![index].fish ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
-                                ]),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text((_ementas![index].meat ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                        if (ementas[index].img != null)
+                          Image.network(("http://192.168.1.65:8080/images/${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text((ementas[index].toShow!.soup ?? "ABC"), style: TextStyle(color: getColorStyle(ementas![index].toShow!)))
                                     ]),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children:[
-                                      Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text((_ementas![index].vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text((ementas[index].toShow!.fish!), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
                                     ]),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children: [
+                                          Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text((ementas[index].toShow!.meat ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                        ]),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children:[
+                                          Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text((ementas[index].toShow!.vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                        ]),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                                    child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                                        children:[
+                                          Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                          Text((ementas[index].toShow!.desert ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                        ]),
+                                  ),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(20.0),
+                                      child: ElevatedButton(
+                                        onPressed: () { onClick(ementas[index].toShow!); },
+                                      child: Text("Editar"),),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children:[
-                                      Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text((_ementas![index].desert ?? "ABC"), style: TextStyle(color: getColorStyle(_ementas![index])))
-                                    ]),
-                              ),
-                            ],
-                          ),
-                        )
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   )
@@ -182,17 +179,13 @@ class _MyHomePageState extends State<MyHomePage> {
     if (list != null) {
       debugPrint(list);
       final Map<String, dynamic> decodedData = json.decode(list);
-      _ementas = [];
+      ementas = [];
       setState(() {
         _dataAvailable = true;
         _fetchingData = false;
         _text = "";
         decodedData.forEach((key, value) {
-          if (value["update"] != null) {
-            _ementas?.add(EmentaDia.fromJson(value["update"], true));
-          }else{
-            _ementas?.add(EmentaDia.fromJson(value["original"], false));
-          }
+          ementas.add(EmentaDia.fromJson(value));
         });
       });
     }else{
@@ -211,22 +204,20 @@ class _MyHomePageState extends State<MyHomePage> {
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
-      http.Response response = await http.get(Uri.parse("http://10.0.2.2:8080/menu"));
+      http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu"));
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
-        final Map<String, dynamic> decodedData = json.decode(response.body);
-        storeDataOnSharedPreferences(response.body);
-        _ementas = [];
+        final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
+        storeDataOnSharedPreferences(utf8.decode(response.bodyBytes));
+        ementas = [];
         setState(() => {
           _text = "",
+
           decodedData.forEach((key, value) {
-            if (value["update"] != null) {
-              _ementas?.add(EmentaDia.fromJson(value["update"], true));
-            }else{
-              _ementas?.add(EmentaDia.fromJson(value["original"], false));
-            }
+            ementas.add(EmentaDia.fromJson(value));
           })
         });
+
       }
     } catch (ex) {
       debugPrint('Something went wrong: $ex');
@@ -236,20 +227,29 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  Color getColorStyle(EmentaDia ementa) {
+  Color getColorStyle(Ementa ementa) {
     if(ementa.update == true){
       return Colors.teal.shade700;
     }
     return Colors.black87;
   }
 
-  Future<void> onClick(EmentaDia ementaDia)async {
+  Future<void> onClick(Ementa ementaDia)async {
     final object = await Navigator.of(context).pushNamed("DetailsPage", arguments: ementaDia);
     bool successfully = object is bool ? object : false;
 
     if(successfully){
       _updateData();
     }
+  }
+
+  Future<Uint8List?> _fetchImage(String? img) async {
+    http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/images/$img"));
+    if (response.statusCode == HttpStatus.ok) {
+      return response.bodyBytes;
+    }  
+    return null;
+    
   }
 }
 
