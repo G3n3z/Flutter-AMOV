@@ -28,5 +28,12 @@ class EmentaDia{
     return ementa;
   }
 
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = <String, dynamic>{};
+
+
+
+    return data;
+  }
 
 }

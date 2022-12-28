@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   // )
                   GestureDetector(
                     onTap: (){
-                      Navigator.of(context).pushNamed("DetailsPage", arguments: _ementas![index]);
+                      onClick(_ementas![index]);
                     },
                     child: Row(
                       children: [
@@ -198,6 +198,16 @@ class _MyHomePageState extends State<MyHomePage> {
     } finally {
       setState(() => _fetchingData = false);
     }
+  }
+
+  Future<void> onClick(EmentaDia ementaDia)async {
+    final object = await Navigator.of(context).pushNamed("DetailsPage", arguments: ementaDia);
+    bool successfully = object is bool ? object : false;
+
+    if(successfully){
+      _updateData();
+    }
+
   }
 }
 
