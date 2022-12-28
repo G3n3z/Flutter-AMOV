@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 
 import 'CameraPage.dart';
+import 'Teste.dart';
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key}) : super(key: key);
 
@@ -153,13 +154,14 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Future<void> getPicture()async {
-    WidgetsFlutterBinding.ensureInitialized();
+    //WidgetsFlutterBinding.ensureInitialized();
     // Obtain a list of the available cameras on the device.
     // Obtain a list of the available cameras on the device.
-    final cameras = await availableCameras();
+    //final cameras = await availableCameras();
 
     // Get a specific camera from the list of available cameras.
-    final firstCamera = cameras.first;
-    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => CameraPage.camera(firstCamera)));
+    //final firstCamera = cameras.first;
+    //await Navigator.of(context).push(MaterialPageRoute(builder: (_) => CameraPage()));
+    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => TakePictureScreen(camera:CameraInstance.getInstance()!.camera!)));
   }
 }

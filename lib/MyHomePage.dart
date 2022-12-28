@@ -214,7 +214,7 @@ class _MyHomePageState extends State<MyHomePage> {
       http.Response response = await http.get(Uri.parse("http://10.0.2.2:8080/menu"));
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
-        final Map<String, dynamic> decodedData = json.decode(response.body);
+        final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
         storeDataOnSharedPreferences(response.body);
         _ementas = [];
         setState(() => {
