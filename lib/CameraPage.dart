@@ -19,7 +19,7 @@ class _CameraPageState extends State<CameraPage> {
   late final Object? args = ModalRoute.of(context)?.settings.arguments;
   late final CameraDescription? cameraDescription = args is CameraDescription ? args as CameraDescription : null;
   late CameraController controller;
-
+  bool cameraPermissions = false;
 
   @override
   void initState() {
@@ -30,13 +30,17 @@ class _CameraPageState extends State<CameraPage> {
         if (!mounted) {
           return;
         }
-        setState(() {});
+        setState(() {
+          cameraPermissions = true;
+        });
       }).catchError((Object e) {
         if (e is CameraException) {
           print("ERRO INITIALIZE");
           switch (e.code) {
             case 'CameraAccessDenied':
-            // Handle access errors here.
+              setState(() {
+                cameraPermissions = false;
+              });
               break;
             default:
             // Handle other errors here.
@@ -60,21 +64,33 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: FutureBuilder<void>(
-      //   future: _initializeControllerFuture,
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.done) {
-      //       // If the Future is complete, display the preview.
-      //       return CameraPreview(_controller);
-      //     } else {
-      //       // Otherwise, display a loading indicator.
-      //       return const Center(child: CircularProgressIndicator());
-      //     }
-      //   },
-      // ),
-      body: CameraPreview(controller)
+      body:
+        Center(child:
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
 
-      ,floatingActionButton:
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+            if(cameraPermissions)
+              FutureBuilder<void>(
+                future: _initializeControllerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // If the Future is complete, display the preview.
+                    return Expanded(child:CameraPreview(controller));
+                  } else {
+                    // Otherwise, display a loading indicator.
+                    return const Center(child: Text("Não tem permissões para a camera"));
+                  }
+                },
+              ),
+            if(!cameraPermissions)
+                Container(child: const Text("Não contem permissões"))
+          ],),
+          ),
+      // body: CameraPreview(controller)
+
+      floatingActionButton:
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
