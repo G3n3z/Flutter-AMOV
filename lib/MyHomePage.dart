@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:ementa_cantina/Model/EmentaDia.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 class MyHomePage extends StatefulWidget {
@@ -190,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
         decodedData.forEach((key, value) {
           ementas.add(EmentaDia.fromJson(value));
         });
+        ementas = weekSort(ementas);
       });
     }else{
       setState(() {
@@ -207,11 +210,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
+
       http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu")).timeout(
           const Duration(seconds: 2),
           onTimeout: () {
             return http.Response('Error', 408); // Request Timeout response status code
           });
+
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
@@ -219,10 +224,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ementas = [];
         setState(() => {
           _text = "",
-
           decodedData.forEach((key, value) {
             ementas.add(EmentaDia.fromJson(value));
-          })
+          }),
+          ementas = weekSort(ementas)
         });
 
       }else{
@@ -318,6 +323,26 @@ class _MyHomePageState extends State<MyHomePage> {
   SnackBar getSnackBar(String text){
      return SnackBar(
       content: Text( text));
+  }
+
+  List<EmentaDia> weekSort(List<EmentaDia> ementas) {
+    var currentWeekDay = DateFormat('EEEE').format(DateTime.now()).toUpperCase();
+    List<EmentaDia> newEmentas = [];
+    int dia = 0;
+
+    for(var ementa in ementas){
+      if(ementa.day == currentWeekDay){
+        break;
+      }
+      dia++;
+    }
+
+    newEmentas = ementas.sublist(dia);
+    if(dia != 0) {
+      newEmentas.addAll(ementas.sublist(0, dia));
+    }
+
+    return newEmentas;
   }
 }
 
