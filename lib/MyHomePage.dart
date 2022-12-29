@@ -72,11 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   separatorBuilder: (_, __) => const Divider(thickness: 2.0),
                   itemBuilder: (BuildContext context, int index) =>
 
-                  GestureDetector(
-                    onTap: (){
-                      onClick(ementas[index].toShow!);
-                    },
-                    child: Column(
+                   Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 15),
@@ -88,7 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         ),
                         if (ementas[index].img != null)
-                          Image.network(("http://192.168.1.65:8080/images/${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover),
+                          Image.network(("http://192.168.1.65:8080/images/${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover,
+                              errorBuilder:(BuildContext context, Object exception,
+                              StackTrace? stackTrace) {
+                                  return const Text("No available");}),
                         Row(
                           children: [
                             Expanded(
@@ -159,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   )
                 ),
-              )
+
           ],
         ),
       ),
@@ -262,19 +261,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<Uint8List?> _fetchImage(String? img) async {
+  Future<Widget> _fetchImage(String? img) async {
     http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/images/$img")).timeout(
         const Duration(seconds: 2),
         onTimeout: () {
           return http.Response('Error', 408); // Request Timeout response status code
         });
     if (response.statusCode == HttpStatus.ok) {
-      return response.bodyBytes;
+      return Image.memory(response.bodyBytes,width: 400,height: 200, fit: BoxFit.cover,);
     }else{
       showSnackBar("Não foi possivel satisfazer o pedido");
     }
-    return null;
-    
+    return const Text("Imagem não foi possivel carregar");
+
   }
 
   Future<bool> getLocation() async {
