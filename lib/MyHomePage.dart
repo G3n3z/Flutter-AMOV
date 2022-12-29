@@ -7,6 +7,7 @@ import 'package:ementa_cantina/Model/EmentaDia.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -31,6 +32,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _fetchingData = false;
   bool _dataAvailable = false;
   String _text = "";
+
+
+
   @override
   void initState() {
     super.initState();
@@ -204,7 +208,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Future <void> _updateData() async {
     try {
       setState(() => _fetchingData = true);
-      http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu"));
+      http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu")).timeout(
+          const Duration(seconds: 2),
+          onTimeout: () {
+            return http.Response('Error', 408); // Request Timeout response status code
+          });
       if (response.statusCode == HttpStatus.ok) {
         debugPrint(response.body);
         final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
@@ -218,10 +226,16 @@ class _MyHomePageState extends State<MyHomePage> {
           })
         });
 
+      }else{
+        showSnackBar("Não foi possivel satisfazer o pedido");
       }
-    } catch (ex) {
-      debugPrint('Something went wrong: $ex');
-    } finally {
+    } on SocketException catch (ex) {
+      showSnackBar("Sem conexão");
+    }
+    catch(e){
+      debugPrint('Something went wrong: $e');
+    }
+    finally {
       setState(() => _fetchingData = false);
     }
   }
@@ -235,6 +249,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> onClick(Ementa ementaDia)async {
+    bool canContinue = await getLocation();
+    if(!canContinue){
+      return;
+    }
+
     final object = await Navigator.of(context).pushNamed("DetailsPage", arguments: ementaDia);
     bool successfully = object is bool ? object : false;
 
@@ -244,12 +263,62 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Uint8List?> _fetchImage(String? img) async {
-    http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/images/$img"));
+    http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/images/$img")).timeout(
+        const Duration(seconds: 2),
+        onTimeout: () {
+          return http.Response('Error', 408); // Request Timeout response status code
+        });
     if (response.statusCode == HttpStatus.ok) {
       return response.bodyBytes;
-    }  
+    }else{
+      showSnackBar("Não foi possivel satisfazer o pedido");
+    }
     return null;
     
+  }
+
+  Future<bool> getLocation() async {
+    double latitudeIsec = 40.1925;
+    double longitudeIsec = -8.4116;
+    Location location = Location();
+
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
+    LocationData locationData;
+
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        showSnackBar("Serviço de localização não está disponivel");
+        return false;
+      }
+    }
+
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        showSnackBar("Sem permissões para aceder à localização");
+        return false;
+      }
+    }
+
+    locationData = await location.getLocation();
+    if((locationData.latitude! - latitudeIsec).abs() < 0.00050 && (locationData.longitude! - longitudeIsec).abs() < 0.0050) {
+      return true;
+    }
+    showSnackBar("Apenas pode editar se estiver perto da Cantina do Isec");
+    return false;
+  }
+
+  void showSnackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(getSnackBar(text));
+  }
+
+  SnackBar getSnackBar(String text){
+     return SnackBar(
+      content: Text( text));
   }
 }
 
