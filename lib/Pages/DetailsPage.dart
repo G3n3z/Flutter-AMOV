@@ -2,15 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:ementa_cantina/CameraInst.dart';
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import 'package:camera/camera.dart';
 
 import 'CameraPage.dart';
-import 'Teste.dart';
 class DetailsPage extends StatefulWidget {
   const DetailsPage({Key? key}) : super(key: key);
 
@@ -71,6 +67,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
+                maxLines: null,
                 decoration: const InputDecoration(
                   labelText: "Soup",
                 ),
@@ -80,6 +77,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
+                maxLines: null,
                 decoration: const InputDecoration(
                   labelText: "Fish",
                 ),
@@ -89,6 +87,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
+                maxLines: null,
                 decoration: const InputDecoration(
                   labelText: "Meat",
                 ),
@@ -98,6 +97,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
+                maxLines: null,
                 decoration: const InputDecoration(
                   labelText: "Vegetarian",
                 ),
@@ -107,6 +107,7 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: TextFormField(
+                maxLines: null,
                 decoration: const InputDecoration(
                   labelText: "Desert",
                 ),
@@ -178,6 +179,5 @@ class _DetailsPageState extends State<DetailsPage> {
         haveImage = true;
       });
     }
-    //await Navigator.of(context).push(MaterialPageRoute(builder: (_) => TakePictureScreen(camera:CameraInstance.getInstance()!.camera!)));
   }
 }

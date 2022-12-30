@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 
+import 'package:ementa_cantina/Helpers/Constants.dart';
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:ementa_cantina/Model/EmentaDia.dart';
 import 'package:flutter/material.dart';
@@ -46,12 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -78,82 +74,76 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 15),
-                          child: Container(
-                              child:Text(ementas[index].day ?? "ABC",
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(ementas[index].toShow!)),
-                                  textScaleFactor: 1.5
-                              )
+                          child: Text(ementas[index].day ?? "ABC",
+                              style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(ementas[index].toShow!)),
+                              textScaleFactor: 1.5
                           ),
                         ),
                         if (ementas[index].img != null)
-                          Image.network(("http://192.168.1.65:8080/images/${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover,
+                          Image.network(("${Constants.IMAGES_URL}${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover,
                               errorBuilder:(BuildContext context, Object exception,
                               StackTrace? stackTrace) {
                                   return const Text("No available");}),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
 
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                          Text((ementas[index].toShow!.soup ?? "ABC"), style: TextStyle(color: getColorStyle(ementas![index].toShow!)))
-                                    ]),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                          Text((ementas[index].toShow!.fish!), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
-                                    ]),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                          Text((ementas[index].toShow!.meat ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
-                                        ]),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children:[
-                                          Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                          Text((ementas[index].toShow!.vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
-                                        ]),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children:[
-                                          Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                          Text((ementas[index].toShow!.desert ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
-                                        ]),
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: ElevatedButton(
-                                        onPressed: () { onClick(ementas[index].toShow!); },
-                                      child: Text("Editar"),),
-                                    ),
-                                  ),
-                                ],
+                         Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow!.soup ?? "ABC"), style: TextStyle(color: getColorStyle(ementas![index].toShow!)))
+                              ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow!.fish!), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                              ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow!.meat ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                  ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children:[
+                                    Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow!.vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                  ]),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children:[
+                                    Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow!.desert ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                  ]),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: ElevatedButton(
+                                  onPressed: () { onClick(ementas[index].toShow!); },
+                                child: Text("Editar"),),
                               ),
-                            )
+                            ),
+
                           ],
                         ),
                       ],
@@ -185,13 +175,13 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint(list);
       final Map<String, dynamic> decodedData = json.decode(list);
       ementas = [];
+      decodedData.forEach((key, value) {
+        ementas.add(EmentaDia.fromJson(value));
+      });
       setState(() {
         _dataAvailable = true;
         _fetchingData = false;
         _text = "";
-        decodedData.forEach((key, value) {
-          ementas.add(EmentaDia.fromJson(value));
-        });
         ementas = weekSort(ementas);
       });
     }else{
@@ -211,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       setState(() => _fetchingData = true);
 
-      http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/menu")).timeout(
+      http.Response response = await http.get(Uri.parse(Constants.MENU_URL)).timeout(
           const Duration(seconds: 2),
           onTimeout: () {
             return http.Response('Error', 408); // Request Timeout response status code
@@ -222,11 +212,11 @@ class _MyHomePageState extends State<MyHomePage> {
         final Map<String, dynamic> decodedData = json.decode(utf8.decode(response.bodyBytes));
         storeDataOnSharedPreferences(utf8.decode(response.bodyBytes));
         ementas = [];
+        decodedData.forEach((key, value) {
+          ementas.add(EmentaDia.fromJson(value));
+        });
         setState(() => {
           _text = "",
-          decodedData.forEach((key, value) {
-            ementas.add(EmentaDia.fromJson(value));
-          }),
           ementas = weekSort(ementas)
         });
 
@@ -234,7 +224,12 @@ class _MyHomePageState extends State<MyHomePage> {
         showSnackBar("Não foi possivel satisfazer o pedido");
       }
     } on SocketException catch (ex) {
-      showSnackBar("Sem conexão");
+      if(ex.osError != null && ex.osError?.errorCode == 111){
+        showSnackBar("Não foi possivel atualizar");
+      }else{
+        showSnackBar("Sem conexão");
+      }
+      print(ex.osError);
     }
     catch(e){
       debugPrint('Something went wrong: $e');
@@ -267,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<Widget> _fetchImage(String? img) async {
-    http.Response response = await http.get(Uri.parse("http://192.168.1.65:8080/images/$img")).timeout(
+    http.Response response = await http.get(Uri.parse("${Constants.IMAGES_URL}$img")).timeout(
         const Duration(seconds: 2),
         onTimeout: () {
           return http.Response('Error', 408); // Request Timeout response status code

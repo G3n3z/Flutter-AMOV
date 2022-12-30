@@ -1,5 +1,5 @@
 import 'package:camera/camera.dart';
-import 'package:ementa_cantina/CameraInst.dart';
+import 'package:ementa_cantina/Helpers/CameraInst.dart';
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
 
@@ -94,10 +94,14 @@ class _CameraPageState extends State<CameraPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FloatingActionButton(
-              onPressed: () {takePicture();},
-              child: const Icon(Icons.camera_alt),
-          )],
+
+            Padding(
+              padding: const EdgeInsets.only(left:30),
+              child: FloatingActionButton(
+                onPressed: () {takePicture();},
+                child: const Icon(Icons.camera_alt),
+          ),
+            )],
         ),
     );
   }

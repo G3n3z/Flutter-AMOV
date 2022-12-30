@@ -1,9 +1,9 @@
-import 'package:ementa_cantina/CameraInst.dart';
-import 'package:ementa_cantina/CameraPage.dart';
+import 'package:ementa_cantina/Helpers/CameraInst.dart';
+import 'package:ementa_cantina/Pages/CameraPage.dart';
 import 'package:flutter/material.dart';
 
-import 'DetailsPage.dart';
-import 'MyHomePage.dart';
+import 'Pages/DetailsPage.dart';
+import 'Pages/MyHomePage.dart';
 import 'dart:io';
 import 'package:camera/camera.dart';
 
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       initialRoute:"Home",
       routes:{
-        "Home": (BuildContext context) => MyHomePage(title: "Home"),
+        "Home": (BuildContext context) => MyHomePage(title: "Ementa Semanal"),
         "DetailsPage": (BuildContext context) => DetailsPage(),
         "CameraPage" : (BuildContext context) => CameraPage()
       },
