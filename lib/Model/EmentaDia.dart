@@ -6,20 +6,21 @@ class EmentaDia{
   Ementa? updated;
   String? img;
   bool isUpdated = false;
-  Ementa? toShow;
+  Ementa toShow;
 
 
-  EmentaDia(this.original, this.updated, this.isUpdated, this.day);
+  EmentaDia(this.original, this.updated, this.isUpdated, this.day, this.toShow);
 
   factory EmentaDia.fromJson(Map<String, dynamic> json){
     Ementa? updated;
+    Ementa original = Ementa.fromJson(json["original"]);
     if (json["update"] != null) {
-       updated = Ementa.fromJson(json["update"], true);
+      updated = Ementa.fromJsonUpdated(json["update"], original);
     }
-    Ementa original = Ementa.fromJson(json["original"], false);
-    EmentaDia dia = EmentaDia(original, updated, updated != null, original.day!);
-    dia.toShow = updated ?? original;
+
+    EmentaDia dia = EmentaDia(original, updated, updated != null, original.weekDay.value, updated ?? original);
     dia.img = updated != null && updated.img != null ? updated.img : original.img;
+    dia.toShow.img = dia.img;
     return dia;
   }
 

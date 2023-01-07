@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ementa_cantina/Helpers/Constants.dart';
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -42,11 +43,11 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   void didChangeDependencies() {
     print("Aquixx");
-    _controller_soup.text = ementaDia?.soup ?? "";
-    _controller_fish.text = ementaDia?.fish ?? "";
-    _controller_meat.text = ementaDia?.meat ?? "";
-    _controller_vegetarian.text = ementaDia?.vegetarian ?? "";
-    _controller_desert.text = ementaDia?.desert ?? "";
+    _controller_soup.text = ementaDia?.soup.value ?? "";
+    _controller_fish.text = ementaDia?.fish.value ?? "";
+    _controller_meat.text = ementaDia?.meat.value ?? "";
+    _controller_vegetarian.text = ementaDia?.vegetarian.value ?? "";
+    _controller_desert.text = ementaDia?.desert.value ?? "";
 
     super.didChangeDependencies();
   }
@@ -60,7 +61,7 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Ementa: ${ementaDia?.weekDay}")),
+      appBar: AppBar(title: Text("Ementa: ${ementaDia?.weekDay.value}")),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -126,6 +127,12 @@ class _DetailsPageState extends State<DetailsPage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: ElevatedButton(
+                onPressed: () { resetEmenta(); },
+                child:Text("Reset")
+            )),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
                   onPressed: () { submitEmenta(); },
                   child:Text("Send")
               ),
@@ -138,12 +145,12 @@ class _DetailsPageState extends State<DetailsPage> {
 
   Future<void> submitEmenta() async {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data["weekDay"] = ementaDia?.weekDay ?? "";
-    data["soup"] = _controller_soup.text ?? "";
-    data["fish"] = _controller_fish.text ?? "";
-    data["meat"] = _controller_meat.text ?? "";
-    data["vegetarian"] = _controller_vegetarian.text ?? "";
-    data["desert"] = _controller_desert.text ?? "";
+    data["weekDay"] = ementaDia?.weekDay.value ?? "";
+    data["soup"] = _controller_soup.text;
+    data["fish"] = _controller_fish.text;
+    data["meat"] = _controller_meat.text;
+    data["vegetarian"] = _controller_vegetarian.text;
+    data["desert"] = _controller_desert.text;
     String base64string = "";
     if(haveImage && path != "") {
       try{
@@ -154,10 +161,12 @@ class _DetailsPageState extends State<DetailsPage> {
     }
     if (base64string != "") {
       data["img"] = base64string;
+    }else{
+      data["img"] = ementaDia?.img;
     }
 
 
-    http.Response request = await http.post(Uri.parse("http://192.168.1.65:8080/menu"),
+    http.Response request = await http.post(Uri.parse(Constants.MENU_URL),
         headers: {'Content-Type': 'application/json; charset=UTF-8 '},
         body: jsonEncode( data)
     );
@@ -180,4 +189,37 @@ class _DetailsPageState extends State<DetailsPage> {
       });
     }
   }
+
+  Future<void> resetEmenta()async{
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data["weekDay"] = ementaDia?.weekDay.value ?? "";
+    data["soup"] = "";
+    data["fish"] = "";
+    data["meat"] = "";
+    data["vegetarian"] = "";
+    data["desert"] = "";
+    data["img"] = null;
+    http.Response request = await http.post(Uri.parse(Constants.MENU_URL),
+        headers: {'Content-Type': 'application/json; charset=UTF-8 '},
+        body: jsonEncode( data)
+    );
+    if (request.statusCode == HttpStatus.created) {
+      Navigator.of(context).pop(true);
+    }else{
+      print(request.body);
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
