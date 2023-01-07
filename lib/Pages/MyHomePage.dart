@@ -286,8 +286,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<bool> getLocation() async {
-    double latitudeIsec = 40.1925;
-    double longitudeIsec = -8.4116;
+    double latitudeIsec = 40.193125;
+    double longitudeIsec = -8.41251;
     Location location = Location();
 
     bool serviceEnabled;
@@ -313,8 +313,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     locationData = await location.getLocation();
-
-    if(meterDistanceBetweenPoints(latitudeIsec, longitudeIsec, locationData.latitude!, locationData.longitude!) < 20){
+    double distance = meterDistanceBetweenPoints(latitudeIsec, longitudeIsec, locationData.latitude!, locationData.longitude!);
+    if( distance < 100){
       return true;
     }
     showSnackBar("Apenas pode editar se estiver perto da Cantina do Isec");
