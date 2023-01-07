@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if(!_dataAvailable)
+            if(!_dataAvailable || !_fetchingData)
                Text(_text),
             if (_fetchingData)
               const CircularProgressIndicator(),
@@ -318,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return true;
     }
     showSnackBar("Apenas pode editar se estiver perto da Cantina do Isec");
-    return true;
+    return false;
   }
 
   void showSnackBar(String text){
