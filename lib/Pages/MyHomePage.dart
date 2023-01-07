@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 
 import 'package:ementa_cantina/Helpers/Constants.dart';
+import 'package:ementa_cantina/Helpers/LocationHelpers.dart';
 import 'package:ementa_cantina/Model/Ementa.dart';
 import 'package:ementa_cantina/Model/EmentaDia.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+
+import '../Model/Field.dart';
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -24,8 +27,6 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  final String url = "http://0.0.0.0:8080";
-  final String menu_path = "http://0.0.0.0:8080/menu";
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -35,7 +36,6 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _fetchingData = false;
   bool _dataAvailable = false;
   String _text = "";
-
 
 
   @override
@@ -74,13 +74,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(top: 30, bottom: 15),
-                          child: Text(ementas[index].day ?? "ABC",
-                              style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(ementas[index].toShow!)),
+                          child: Text(ementas[index].toShow.weekDay.value,
+                              style: TextStyle(fontWeight: FontWeight.bold, color: getColorStyle(ementas[index].toShow.weekDay)),
                               textScaleFactor: 1.5
                           ),
                         ),
                         if (ementas[index].img != null)
-                          Image.network(("${Constants.IMAGES_URL}${ementas[index].img}"),width: 400,height: 200, fit: BoxFit.cover,
+                          Image.network(("${Constants.IMAGES_URL}${ementas[index].img}?${DateTime.now().millisecondsSinceEpoch.toString()}"),width: 400,height: 200, fit: BoxFit.cover,
+                              loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes! : null,
+                                    ),
+                                  );
+                              },
                               errorBuilder:(BuildContext context, Object exception,
                               StackTrace? stackTrace) {
                                   return const Text("No available");}),
@@ -95,8 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text((ementas[index].toShow!.soup ?? "ABC"), style: TextStyle(color: getColorStyle(ementas![index].toShow!)))
+                                    const Text("Soup: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow.soup.value),
+                                        style: TextStyle(color: getColorStyle(ementas[index].toShow.soup)))
                               ]),
                             ),
                             Padding(
@@ -104,8 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text((ementas[index].toShow!.fish!), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                    const Text("Fish: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow.fish.value), style: TextStyle(color: getColorStyle(ementas[index].toShow.fish)))
                               ]),
                             ),
                             Padding(
@@ -113,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text((ementas[index].toShow!.meat ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                    const Text("Meat: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow.meat.value), style: TextStyle(color: getColorStyle(ementas[index].toShow.meat)))
                                   ]),
                             ),
                             Padding(
@@ -122,8 +131,8 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children:[
-                                    Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text((ementas[index].toShow!.vegetarian ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                    const Text("Vegeterian: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow.vegetarian.value), style: TextStyle(color: getColorStyle(ementas[index].toShow.vegetarian)))
                                   ]),
                             ),
                             Padding(
@@ -131,16 +140,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children:[
-                                    Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                    Text((ementas[index].toShow!.desert ?? "ABC"), style: TextStyle(color: getColorStyle(ementas[index].toShow!)))
+                                    const Text("Desert: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                                    Text((ementas[index].toShow.desert.value), style: TextStyle(color: getColorStyle(ementas[index].toShow.desert)))
                                   ]),
                             ),
                             Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(20.0),
                                 child: ElevatedButton(
-                                  onPressed: () { onClick(ementas[index].toShow!); },
-                                child: Text("Editar"),),
+                                  onPressed: () { onClick(ementas[index].toShow); },
+                                child: const Text("Editar"),),
                               ),
                             ),
 
@@ -186,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
     }else{
       setState(() {
-        _text = "No data available";
+        _text = "Não existem dados disponiveis";
         _dataAvailable = false;
       });
     }
@@ -240,8 +249,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  Color getColorStyle(Ementa ementa) {
-    if(ementa.update == true){
+  Color getColorStyle(Field field) {
+    if(field.updated){
       return Colors.teal.shade700;
     }
     return Colors.black87;
@@ -277,8 +286,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<bool> getLocation() async {
-    double latitudeIsec = 40.1925;
-    double longitudeIsec = -8.4116;
+    double latitudeIsec = 40.193125;
+    double longitudeIsec = -8.41251;
     Location location = Location();
 
     bool serviceEnabled;
@@ -304,11 +313,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     locationData = await location.getLocation();
-    if((locationData.latitude! - latitudeIsec).abs() < 0.00050 && (locationData.longitude! - longitudeIsec).abs() < 0.0050) {
+    double distance = meterDistanceBetweenPoints(latitudeIsec, longitudeIsec, locationData.latitude!, locationData.longitude!);
+    if( distance < 100){
       return true;
     }
     showSnackBar("Apenas pode editar se estiver perto da Cantina do Isec");
-    return false;
+    return true;
   }
 
   void showSnackBar(String text){
